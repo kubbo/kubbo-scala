@@ -1,11 +1,11 @@
-package com.kubbo.rpc
+package com.kubbo.demo
 
 import scala.concurrent.Future
 
 /**
  * Created by zhu on 2014/9/28.
  */
-trait EchoTest {
+trait EchoService {
 
   def syncEcho(content:String):String
 
@@ -13,7 +13,7 @@ trait EchoTest {
 
 }
 
-class EchoTestImpl extends EchoTest{
+class EchoServiceImpl extends EchoService{
   override def syncEcho(content: String): String = {
     content
   }
