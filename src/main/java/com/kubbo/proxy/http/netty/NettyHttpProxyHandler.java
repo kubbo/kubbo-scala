@@ -42,7 +42,7 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter{
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+    public void channelRead(final ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof HttpRequest) {
 
             HttpRequest req = (HttpRequest) msg;
