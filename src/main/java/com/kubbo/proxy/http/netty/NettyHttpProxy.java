@@ -20,7 +20,7 @@ public class NettyHttpProxy implements HttpProxy {
     @Override
     public void start(int port)  {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        EventLoopGroup workerGroup = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() * 4);
 
         try {
             ServerBootstrap b = new ServerBootstrap();
