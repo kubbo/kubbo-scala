@@ -65,7 +65,7 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter{
 //                flowParam.put(entry.getKey(), entry.getValue().get(0));
 //            }
             final boolean keepAlive = isKeepAlive(req);
-            long start = System.currentTimeMillis();
+            final long start = System.currentTimeMillis();
             if(async) {
                 Future<String> echoFuture = echoService.asyncEcho("async hello world");
                 echoFuture.onComplete(new OnComplete<String>() {
