@@ -9,7 +9,7 @@ import com.kubbo.rpc.akka.ProviderContainer
 object ServiceStartup{
   def main(args: Array[String]) {
     val container = ProviderContainer()
-    container start(classOf[EchoService], new EchoServiceImpl(), "test", "1.0.0")
+    container start(classOf[EchoService], new EchoServiceImpl(0,true), "test", "1.0.0")
     println("service start")
   }
 }

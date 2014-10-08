@@ -13,12 +13,28 @@ trait EchoService {
 
 }
 
-class EchoServiceImpl extends EchoService{
+class EchoServiceImpl(val sleep:Long = 0,val verbose:Boolean = false) extends EchoService{
+
   override def syncEcho(content: String): String = {
+
+    if(verbose){
+      println(Thread.currentThread().getName+" execute")
+    }
+    if(sleep>0){
+      Thread.sleep(sleep)
+    }
+
     content
   }
 
   override def asyncEcho(content: String): Future[String] = {
+    if(verbose){
+      println(Thread.currentThread().getName+" execute")
+    }
+    if (sleep > 0) {
+      Thread.sleep(sleep)
+    }
+
     Future.successful(content)
   }
 }

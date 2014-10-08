@@ -31,7 +31,7 @@ case class ProviderConfig(@transient val clazz:Class[_ <:Any],
   override def toString: String = toPath
 
   override def equals(o: scala.Any): Boolean = {
-    if (this == o) return true
+
     if (o == null || getClass != o.getClass) return false
     val that: ProviderConfig = o.asInstanceOf[ProviderConfig]
 

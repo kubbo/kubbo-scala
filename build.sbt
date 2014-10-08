@@ -37,6 +37,11 @@ libraryDependencies += "com.typesafe.akka" % "akka-kernel_2.10" % "2.3.6"
 
 libraryDependencies += "com.typesafe.akka" % "akka-transactor_2.10" % "2.3.6"
 
+libraryDependencies += "org.scala-lang.modules" % "scala-async_2.10" % "0.9.2"
+
+libraryDependencies += "io.netty" % "netty-example" % "5.0.0.Alpha1"
 
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.11.2")
+
+
 

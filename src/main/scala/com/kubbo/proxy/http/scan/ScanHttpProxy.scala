@@ -38,10 +38,10 @@ class HttpHandlerActor extends Actor with ActorLogging{
   }
 }
 class ScanHttpProxy extends HttpProxy{
-  override def start(): Unit = {
+  override def start(port:Int): Unit = {
     implicit  val system = ActorSystem("proxy-http")
     val handler = system.actorOf(Props[HttpHandlerActor],"Http-handler")
-    IO(Http)!Http.Bind(handler,interface = "127.0.0.1",port=8080)
+    IO(Http)!Http.Bind(handler,interface = "127.0.0.1",port=port)
 
   }
 }

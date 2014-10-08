@@ -6,5 +6,5 @@ package com.kubbo.proxy.http
 trait HttpProxy {
 
 
-  def start():Unit;
+  def start(port:Int):Unit;
 }
