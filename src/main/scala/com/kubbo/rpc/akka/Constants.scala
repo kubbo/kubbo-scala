@@ -22,7 +22,7 @@ object Constants {
 
   val SEED_NODE_ROLE = "akka.cluster.roles=[seed-node]"
 
-  val TYPED_ACTOR_NUM = CPU_CORE * 8
+  val TYPED_ACTOR_NUM =1
 
 
   val PROVIDER_TOTAL_INSTANCE = 64
