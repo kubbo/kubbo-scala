@@ -7,6 +7,8 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <title>NettyHttpProxy</title>
@@ -17,6 +19,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
  */
 public class NettyHttpProxy implements HttpProxy {
 
+    private static final Logger logger = LoggerFactory.getLogger(NettyHttpProxy.class);
     @Override
     public void start(int port)  {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
@@ -32,7 +35,8 @@ public class NettyHttpProxy implements HttpProxy {
             Channel ch = null;
             try {
                 ch = b.bind(port).sync().channel();
-                System.out.println("NettyHttpProxy start!!!");
+                logger.info("NettyHttpProxy start!!!");
+
                 ch.closeFuture().sync();
             } catch (InterruptedException e) {
                 e.printStackTrace();
