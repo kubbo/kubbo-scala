@@ -1,9 +1,7 @@
 package com.kubbo.proxy.http.netty;
 
-import akka.dispatch.OnComplete;
 import com.kubbo.demo.EchoService;
 import com.kubbo.rpc.Ref;
-import com.kubbo.rpc.akka.Context;
 import com.kubbo.rpc.akka.Reference;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -13,7 +11,6 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
-import scala.concurrent.Future;
 
 import java.nio.charset.Charset;
 import java.util.List;
@@ -66,24 +63,27 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter{
 //            }
             final boolean keepAlive = isKeepAlive(req);
             final long start = System.currentTimeMillis();
-            if(async) {
-                Future<String> echoFuture = echoService.asyncEcho("async hello world");
-                echoFuture.onComplete(new OnComplete<String>() {
-                    @Override
-                    public void onComplete(Throwable failure, String success) throws Throwable {
-                        long end = System.currentTimeMillis();
-                        String content = success + ",cost:" + (end - start) + " ms";
-                        FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
-                        sendResponse(responseOk, keepAlive, ctx);
-                    }
-                }, Context.context());
-            }else{
-                String content = echoService.syncEcho("sync hello world");
-                long end = System.currentTimeMillis();
-                content = content + ",cost " + (end - start) + " ms";
-                FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
-                sendResponse(responseOk, keepAlive, ctx);
-            }
+            String content = "hello world";
+            FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
+            sendResponse(responseOk, keepAlive, ctx);
+//            if(async) {
+//                Future<String> echoFuture = echoService.asyncEcho("async hello world");
+//                echoFuture.onComplete(new OnComplete<String>() {
+//                    @Override
+//                    public void onComplete(Throwable failure, String success) throws Throwable {
+//                        long end = System.currentTimeMillis();
+//                        String content = success + ",cost:" + (end - start) + " ms";
+//                        FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
+//                        sendResponse(responseOk, keepAlive, ctx);
+//                    }
+//                }, Context.context());
+//            }else{
+//                String content = echoService.syncEcho("sync hello world");
+//                long end = System.currentTimeMillis();
+//                content = content + ",cost " + (end - start) + " ms";
+//                FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
+//                sendResponse(responseOk, keepAlive, ctx);
+//            }
 
 ////
 ////                            sendResponse(responseOk, keepAlive, ctx0);

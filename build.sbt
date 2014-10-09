@@ -41,6 +41,10 @@ libraryDependencies += "org.scala-lang.modules" % "scala-async_2.10" % "0.9.2"
 
 libraryDependencies += "io.netty" % "netty-example" % "5.0.0.Alpha1"
 
+libraryDependencies += "org.apache.logging.log4j" % "log4j-core" % "2.0.2"
+
+libraryDependencies += "org.apache.logging.log4j" % "log4j-api" % "2.0.2"
+
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.11.2")
 
 
