@@ -3,7 +3,7 @@ package com.kubbo.rpc.akka
 /**
  * Created by zhu on 2014/9/24.
  */
-object  Constants {
+object Constants {
 
 
   val CPU_CORE = Runtime.getRuntime.availableProcessors()
@@ -18,20 +18,14 @@ object  Constants {
   val PROVIDER_ROLE = "provider"
 
   val CONSUMER_ROLE = "consumer"
-  
 
-  
+
   val SEED_NODE_ROLE = "akka.cluster.roles=[seed-node]"
 
-  val TYPED_ACTOR_NUM = CPU_CORE*2
+  val TYPED_ACTOR_NUM = CPU_CORE * 8
 
 
   val PROVIDER_TOTAL_INSTANCE = 64
-
-
-
-
-
 
 
 }
