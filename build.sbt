@@ -47,6 +47,8 @@ libraryDependencies += "org.apache.logging.log4j" % "log4j-api" % "2.0.2"
 
 libraryDependencies += "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.0.2"
 
+libraryDependencies += "com.lmax" % "disruptor" % "3.3.0"
+
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.11.2")
 
 
