@@ -57,7 +57,8 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter{
 
             QueryStringDecoder decoder = new QueryStringDecoder(req.getUri(), Charset.forName("UTF-8"));
             Map<String, List<String>> params = decoder.parameters();
-            boolean method = params.containsKey("method");
+            String method = params.containsKey("method") ? params.get("method").get(0) : "sync";
+
 //            String flowName = params.containsKey("flow") ? params.get("flow").get(0) : null;
 //
 //            String version = params.containsKey("version") ? params.get("version").get(0) : null;
