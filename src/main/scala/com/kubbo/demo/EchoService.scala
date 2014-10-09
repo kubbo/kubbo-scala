@@ -11,6 +11,7 @@ trait EchoService {
 
   def asyncEcho(content:String):Future[String]
 
+  def voidEcho(content:String)
 }
 
 class EchoServiceImpl(val sleep:Long = 0,val verbose:Boolean = false) extends EchoService{
@@ -36,5 +37,9 @@ class EchoServiceImpl(val sleep:Long = 0,val verbose:Boolean = false) extends Ec
     }
 
     Future.successful(content)
+  }
+
+  override def voidEcho(content: String): Unit = {
+
   }
 }

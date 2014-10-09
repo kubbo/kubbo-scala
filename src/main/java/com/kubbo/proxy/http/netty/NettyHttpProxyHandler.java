@@ -57,7 +57,7 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter{
 
             QueryStringDecoder decoder = new QueryStringDecoder(req.getUri(), Charset.forName("UTF-8"));
             Map<String, List<String>> params = decoder.parameters();
-            boolean async = params.containsKey("async");
+            boolean method = params.containsKey("method");
 //            String flowName = params.containsKey("flow") ? params.get("flow").get(0) : null;
 //
 //            String version = params.containsKey("version") ? params.get("version").get(0) : null;
@@ -71,7 +71,7 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter{
             final boolean keepAlive = isKeepAlive(req);
             final long start = System.currentTimeMillis();
 
-            if(async) {
+            if("async".equals(method)) {
                 Future<String> echoFuture = echoService.asyncEcho("async hello world");
                 echoFuture.onComplete(new OnComplete<String>() {
                     @Override
@@ -83,11 +83,17 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter{
                         sendResponse(responseOk, keepAlive, ctx);
                     }
                 }, Context.context());
-            }else{
+            }else if("sync".equals(method)){
                 String content = echoService.syncEcho("sync hello world");
                 long end = System.currentTimeMillis();
                 content = content + ",cost " + (end - start) + " ms";
                 logger.info(content);
+                FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
+                sendResponse(responseOk, keepAlive, ctx);
+            }else if ("void".equals(method)) {
+                String content = "void hello world";
+                echoService.voidEcho(content);
+                long end = System.currentTimeMillis();
                 FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
                 sendResponse(responseOk, keepAlive, ctx);
             }
