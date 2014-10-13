@@ -90,6 +90,10 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter {
                 logger.info(content + ",cost:" + (end - start));
                 FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
                 sendResponse(responseOk, keepAlive, ctx);
+            }else if ("none".equals(method)) {
+                String content = "none hello world";
+                FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
+                sendResponse(responseOk, keepAlive, ctx);
             }
         }
 
