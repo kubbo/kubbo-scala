@@ -60,6 +60,7 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter {
             QueryStringDecoder decoder = new QueryStringDecoder(req.getUri(), Charset.forName("UTF-8"));
             Map<String, List<String>> params = decoder.parameters();
             String method = params.containsKey("method") ? params.get("method").get(0) : "sync";
+            boolean verbose = params.containsKey("verbose") ? Boolean.parseBoolean(params.get("verbose").get(0)) : Boolean.FALSE;
 
             final boolean keepAlive = isKeepAlive(req);
             final long start = System.nanoTime();
@@ -71,7 +72,9 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter {
                     public void onComplete(Throwable failure, String success) throws Throwable {
                         long end = System.currentTimeMillis();
                         String content = success + ",cost:" + (end - start) + " ms";
-                        logger.info(content);
+                        if (verbose) {
+                            logger.info(content);
+                        }
                         FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
                         sendResponse(responseOk, keepAlive, ctx);
                     }
@@ -80,14 +83,19 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter {
                 String content = echoService.syncEcho("sync hello world");
                 long end = System.nanoTime();
                 content = content + ",cost " + (end - start) + " ms";
-                logger.info(content);
+                if (verbose) {
+                    logger.info(content);
+                }
                 FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
                 sendResponse(responseOk, keepAlive, ctx);
             } else if ("void".equals(method)) {
                 String content = "void hello world";
                 echoService.voidEcho(content);
                 long end = System.nanoTime();
-                logger.info(content + ",cost:" + (end - start));
+                if (verbose) {
+                    logger.info(content + ",cost:" + (end - start));
+                }
+
                 FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
                 sendResponse(responseOk, keepAlive, ctx);
             }else if ("none".equals(method)) {
