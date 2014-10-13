@@ -20,11 +20,14 @@ import org.slf4j.LoggerFactory;
 public class NettyHttpProxy implements HttpProxy {
 
     private static final Logger logger = LoggerFactory.getLogger(NettyHttpProxy.class);
+    private static final String CONFIG = "proxy.properties";
+    private NettyProxyConfig config = NettyProxyConfig.load(CONFIG);
+
+
     @Override
     public void start(int port)  {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() * 4);
-
+        EventLoopGroup workerGroup = new NioEventLoopGroup(config.getWorkerCount());
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.option(ChannelOption.SO_BACKLOG, 1024);
