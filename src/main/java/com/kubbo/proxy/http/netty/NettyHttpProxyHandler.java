@@ -26,6 +26,7 @@ import static io.netty.handler.codec.http.HttpHeaders.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.CONTINUE;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
+
 /**
  * <title>NettyHttpProxyHandler</title>
  * <p></p>
@@ -33,13 +34,14 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
  * @author zhuwei
  *         2014/10/8
  */
-public class NettyHttpProxyHandler extends ChannelHandlerAdapter{
+public class NettyHttpProxyHandler extends ChannelHandlerAdapter {
 
 
     private static final Logger logger = LoggerFactory.getLogger(NettyHttpProxyHandler.class);
 
     private Ref ref = Reference.get();
     private EchoService echoService = ref.getRef(EchoService.class, "test", "1.0.0");
+
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
         ctx.flush();
@@ -59,20 +61,10 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter{
             Map<String, List<String>> params = decoder.parameters();
             String method = params.containsKey("method") ? params.get("method").get(0) : "sync";
 
-//            String flowName = params.containsKey("flow") ? params.get("flow").get(0) : null;
-//
-//            String version = params.containsKey("version") ? params.get("version").get(0) : null;
-//
-//            Map<String, Object> flowParam = new HashMap<String, Object>();
-//            params.remove("flow");
-//            params.remove("version");
-//            for (Map.Entry<String, List<String>> entry : params.entrySet()) {
-//                flowParam.put(entry.getKey(), entry.getValue().get(0));
-//            }
             final boolean keepAlive = isKeepAlive(req);
             final long start = System.currentTimeMillis();
 
-            if("async".equals(method)) {
+            if ("async".equals(method)) {
                 Future<String> echoFuture = echoService.asyncEcho("async hello world");
                 echoFuture.onComplete(new OnComplete<String>() {
                     @Override
@@ -84,84 +76,26 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter{
                         sendResponse(responseOk, keepAlive, ctx);
                     }
                 }, Context.context());
-            }else if("sync".equals(method)){
+            } else if ("sync".equals(method)) {
                 String content = echoService.syncEcho("sync hello world");
                 long end = System.currentTimeMillis();
                 content = content + ",cost " + (end - start) + " ms";
                 logger.info(content);
                 FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
                 sendResponse(responseOk, keepAlive, ctx);
-            }else if ("void".equals(method)) {
+            } else if ("void".equals(method)) {
                 String content = "void hello world";
                 echoService.voidEcho(content);
                 long end = System.currentTimeMillis();
                 FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
                 sendResponse(responseOk, keepAlive, ctx);
             }
-
-////
-////                            sendResponse(responseOk, keepAlive, ctx0);
-//            if (StringUtils.isBlank(flowName) || StringUtils.isBlank(version)) {
-//                FullHttpResponse invalidParamResponse = new DefaultFullHttpResponse(HTTP_1_1, BAD_REQUEST, Unpooled.wrappedBuffer("Must param:flow,version".getBytes()));
-//                sendResponse(invalidParamResponse, false, ctx);
-//            } else {
-//                final long flow_create_start = TimeUtil.nowMic();
-//                Flow flow = flowFactory.create(flowName, version);
-//                final long flow_create_end = TimeUtil.nowMic();
-//
-//
-//                flow.getContext().putAll(flowParam);
-//                final long flow_start_start = TimeUtil.nowMic();
-//                final FlowFuture<String> future = flow.start();
-//                final long flow_start_end = TimeUtil.nowMic();
-//                FullHttpResponse response = null;
-//                try {
-//                    String result = future.get();
-//                    long flow_run_end = TimeUtil.nowMic();
-//                    response = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(result == null ? "".getBytes() : result.toString().getBytes()));
-//                    sendResponse(response,keepAlive,ctx);
-//                    logger.info("flowCreate:{},flowStart:{},flowRun:{},total request:{}", flow_create_end - flow_create_start, flow_start_end - flow_start_start, flow_run_end-flow_start_end,TimeUtil.nowMic() - request_start);
-//                } catch (Exception e) {
-//                    logger.error(e.getMessage(), e);
-//                    response = new DefaultFullHttpResponse(HTTP_1_1,HttpResponseStatus.OK, Unpooled.wrappedBuffer(e.toString().getBytes()));
-//                    sendResponse(response, false, ctx);
-//                }
-//
-////                final long flow_start_end = TimeUtil.nowMic();
-////                final ChannelHandlerContext ctx0 = ctx;
-////
-////                future.addListener(new FlowListener() {
-////                    @Override
-////                    public void operatorComplete(FlowFuture f) {
-////                        if (f.isSuccess()) {
-////                            Object result = null;
-////                            try {
-////                                result = future.get();
-////                            } catch (InterruptedException e) {
-////                                //
-////                            }
-////                            long flow_run_end = TimeUtil.nowMic();
-////                            FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(result == null ? "".getBytes() : result.toString().getBytes()));
-////
-////                            sendResponse(responseOk, keepAlive, ctx0);
-////                            logger.info("flowCreate:{},flowStart:{},flowRun:{},total request:{}", flow_create_end - flow_create_start, flow_start_end - flow_start_start, flow_run_end-flow_start_end,TimeUtil.nowMic() - request_start);
-////                        } else {
-////                            Throwable cause = f.getCause();
-////                            FullHttpResponse responseError = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(cause.toString().getBytes()));
-////                            sendResponse(responseError, false, ctx0);
-////                        }
-////                    }
-////                });
-//
-//            }
-
-
         }
 
     }
 
 
-    private void sendResponse(FullHttpResponse response, boolean keepAlive,ChannelHandlerContext ctx) {
+    private void sendResponse(FullHttpResponse response, boolean keepAlive, ChannelHandlerContext ctx) {
         response.headers().set(CONTENT_TYPE, "text/plain");
         response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
 
