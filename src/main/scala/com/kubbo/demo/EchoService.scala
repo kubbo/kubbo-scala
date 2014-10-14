@@ -7,16 +7,16 @@ import scala.concurrent.Future
  */
 trait EchoService {
 
-  def syncEcho(content:String):String
+  def syncEcho(content:String,sleep:Long=0,verbose:Boolean=false):String
 
-  def asyncEcho(content:String):Future[String]
+  def asyncEcho(content:String,sleep:Long=0,verbose:Boolean=false):Future[String]
 
-  def voidEcho(content:String)
+  def voidEcho(content:String,sleep:Long=0,verbose:Boolean=false)
 }
 
-class EchoServiceImpl(val sleep:Long = 0,val verbose:Boolean = false) extends EchoService{
+class EchoServiceImpl() extends EchoService{
 
-  override def syncEcho(content: String): String = {
+  override def syncEcho(content: String,sleep:Long=0,verbose:Boolean=false): String = {
 
     if(verbose){
       println(Thread.currentThread().getName+" execute")
@@ -28,7 +28,7 @@ class EchoServiceImpl(val sleep:Long = 0,val verbose:Boolean = false) extends Ec
     content
   }
 
-  override def asyncEcho(content: String): Future[String] = {
+  override def asyncEcho(content: String,sleep:Long=0,verbose:Boolean=false): Future[String] = {
     if(verbose){
       println(Thread.currentThread().getName+" execute")
     }
@@ -39,7 +39,7 @@ class EchoServiceImpl(val sleep:Long = 0,val verbose:Boolean = false) extends Ec
     Future.successful(content)
   }
 
-  override def voidEcho(content: String): Unit = {
+  override def voidEcho(content: String,sleep:Long=0,verbose:Boolean=false): Unit = {
 
   }
 }

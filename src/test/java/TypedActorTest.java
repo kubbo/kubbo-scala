@@ -28,7 +28,7 @@ public class TypedActorTest {
         EchoService echoService = typed.typedActorOf(new TypedProps<EchoService>(EchoService.class, new Creator<EchoService>() {
             @Override
             public EchoService create() throws Exception {
-                return new EchoServiceImpl(0, false);
+                return new EchoServiceImpl();
             }
         }));
         int count = 100000;
@@ -42,7 +42,7 @@ public class TypedActorTest {
             executor.execute(() -> {
                 while (COUNT.getAndDecrement() > 0) {
                     long s = System.nanoTime();
-                    echoService.voidEcho("hello world");
+                    echoService.voidEcho("hello world",0,false);
                     long e = System.nanoTime();
                     times.addAndGet(e - s);
                 }

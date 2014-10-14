@@ -45,6 +45,8 @@ public class ProviderTest {
             List<String> methods = new ArrayList<String>();
             Collections.addAll(methods, "sync", "async", "void");
             String method = config.getString("benchmark.method");
+            long sleep = config.getLong("benchmark.sleep");
+            boolean verbose = config.getBoolean("benchmark.verbose");
             final int index = methods.indexOf(method);
             System.out.println("index:" + index);
             for (int i = 0; i < concurrent; i++) {
@@ -54,13 +56,13 @@ public class ProviderTest {
                             long s = System.nanoTime();
                             switch (index) {
                                 case 0:
-                                    echoService.syncEcho("hello");
+                                    echoService.syncEcho("hello",sleep,verbose);
                                     break;
                                 case 1:
-                                    echoService.asyncEcho("hello");
+                                    echoService.asyncEcho("hello",sleep,verbose);
                                     break;
                                 case 2:
-                                    echoService.voidEcho("hello");
+                                    echoService.voidEcho("hello", sleep, verbose);
                                     break;
                             }
                             long e = System.nanoTime();
@@ -87,7 +89,7 @@ public class ProviderTest {
         Ref ref = Reference.get();
         final EchoService echoService = ref.getRef(EchoService.class, "test", "1.0.0");
         Thread.sleep(5000);
-        String test = echoService.syncEcho("test");
+        String test = echoService.syncEcho("test", 0, false);
         System.out.println(test);
 
         for (; ; ) {
