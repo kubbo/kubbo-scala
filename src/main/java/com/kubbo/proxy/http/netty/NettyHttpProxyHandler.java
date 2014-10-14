@@ -1,9 +1,7 @@
 package com.kubbo.proxy.http.netty;
 
-import akka.dispatch.OnComplete;
 import com.kubbo.demo.EchoService;
 import com.kubbo.rpc.Ref;
-import com.kubbo.rpc.akka.Context;
 import com.kubbo.rpc.akka.Reference;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -67,18 +65,26 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter {
 
             if ("async".equals(method)) {
                 Future<String> echoFuture = echoService.asyncEcho("async hello world");
-                echoFuture.onComplete(new OnComplete<String>() {
-                    @Override
-                    public void onComplete(Throwable failure, String success) throws Throwable {
-                        long end = System.currentTimeMillis();
-                        String content = success + ",cost:" + (end - start) + " ms";
-                        if (verbose) {
-                            logger.info(content);
-                        }
-                        FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
-                        sendResponse(responseOk, keepAlive, ctx);
-                    }
-                }, Context.context());
+                long end = System.currentTimeMillis();
+                String content = "hello" + ",cost:" + (end - start) + " ms";
+
+                if (verbose) {
+                    logger.info(content);
+                }
+                FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
+                sendResponse(responseOk, keepAlive, ctx);
+//                echoFuture.onComplete(new OnComplete<String>() {
+//                    @Override
+//                    public void onComplete(Throwable failure, String success) throws Throwable {
+//                        long end = System.currentTimeMillis();
+//                        String content = success + ",cost:" + (end - start) + " ms";
+//                        if (verbose) {
+//                            logger.info(content);
+//                        }
+//                        FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
+//                        sendResponse(responseOk, keepAlive, ctx);
+//                    }
+//                }, Context.context());
             } else if ("sync".equals(method)) {
                 String content = echoService.syncEcho("sync hello world");
                 long end = System.nanoTime();
