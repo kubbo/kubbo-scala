@@ -45,8 +45,8 @@ public class ProviderTest {
             List<String> methods = new ArrayList<String>();
             Collections.addAll(methods, "sync", "async", "void");
             String method = config.getString("benchmark.method");
-            long sleep = config.getLong("benchmark.sleep");
-            boolean verbose = config.getBoolean("benchmark.verbose");
+            final long sleep = config.getLong("benchmark.sleep");
+            final boolean verbose = config.getBoolean("benchmark.verbose");
             final int index = methods.indexOf(method);
             System.out.println("index:" + index);
             for (int i = 0; i < concurrent; i++) {
