@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ProviderTest {
 
 
-    public  static  void test(EchoService echoService) throws InterruptedException {
+    public  static  void test(final EchoService echoService) throws InterruptedException {
         Config config = ConfigFactory.parseURL(Thread.currentThread().getContextClassLoader().getResource("benchmark.conf"));
         System.out.println(config);
         final int concurrent = config.getInt("benchmark.concurrent");
@@ -46,6 +46,7 @@ public class ProviderTest {
             Collections.addAll(methods, "sync", "async", "void");
             String method = config.getString("benchmark.method");
             final int index = methods.indexOf(method);
+            System.out.println("index:" + index);
             for (int i = 0; i < concurrent; i++) {
                 executor.execute(new Runnable() {
                     public void run() {
