@@ -65,7 +65,7 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter {
 
             if ("async".equals(method)) {
                 Future<String> echoFuture = echoService.asyncEcho("async hello world");
-                long end = System.currentTimeMillis();
+                long end = System.nanoTime();
                 String content = "hello" + ",cost:" + (end - start) + " ms";
 
                 if (verbose) {
