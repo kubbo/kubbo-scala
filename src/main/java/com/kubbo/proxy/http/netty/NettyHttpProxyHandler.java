@@ -59,12 +59,12 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter {
             Map<String, List<String>> params = decoder.parameters();
             String method = params.containsKey("method") ? params.get("method").get(0) : "sync";
             final boolean verbose = params.containsKey("verbose") ? Boolean.parseBoolean(params.get("verbose").get(0)) : Boolean.FALSE;
-
+            final long sleep = params.containsKey("sleep") ? Long.parseLong(params.get("sleep").get(0)) : 0;
             final boolean keepAlive = isKeepAlive(req);
             final long start = System.nanoTime();
 
             if ("async".equals(method)) {
-                Future<String> echoFuture = echoService.asyncEcho("async hello world",0,false);
+                Future<String> echoFuture = echoService.asyncEcho("async hello world",sleep,verbose);
                 long end = System.nanoTime();
                 String content = "hello" + ",cost:" + (end - start) + " ms";
 
@@ -86,7 +86,7 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter {
 //                    }
 //                }, Context.context());
             } else if ("sync".equals(method)) {
-                String content = echoService.syncEcho("sync hello world",0,false);
+                String content = echoService.syncEcho("sync hello world",sleep,verbose);
                 long end = System.nanoTime();
                 content = content + ",cost " + (end - start) + " ms";
                 if (verbose) {
@@ -96,7 +96,7 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter {
                 sendResponse(responseOk, keepAlive, ctx);
             } else if ("void".equals(method)) {
                 String content = "void hello world";
-                echoService.voidEcho(content, 0, false);
+                echoService.voidEcho(content, sleep, verbose);
                 long end = System.nanoTime();
                 if (verbose) {
                     logger.info(content + ",cost:" + (end - start));
