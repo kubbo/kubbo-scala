@@ -1,3 +1,5 @@
+package com.kubbo.proxy.http.netty;
+
 import com.kubbo.demo.EchoService;
 import com.kubbo.rpc.Ref;
 import com.kubbo.rpc.akka.Reference;
@@ -14,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * <title>ProviderTest</title>
+ * <title>com.kubbo.proxy.http.netty.ProviderTest</title>
  * <p></p>
  *
  * @author zhuwei
