@@ -61,9 +61,10 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter {
             final boolean verbose = params.containsKey("verbose") ? Boolean.parseBoolean(params.get("verbose").get(0)) : Boolean.FALSE;
             final long sleep = params.containsKey("sleep") ? Long.parseLong(params.get("sleep").get(0)) : 0;
             final boolean keepAlive = isKeepAlive(req);
-            final long start = System.nanoTime();
+
 
             if ("async".equals(method)) {
+                final long start = System.nanoTime();
                 Future<String> echoFuture = echoService.asyncEcho("async hello world",sleep,verbose);
                 long end = System.nanoTime();
                 String content = "hello" + ",cost:" + (end - start) + " ms";
@@ -86,6 +87,7 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter {
 //                    }
 //                }, Context.context());
             } else if ("sync".equals(method)) {
+                final long start = System.nanoTime();
                 String content = echoService.syncEcho("sync hello world",sleep,verbose);
                 long end = System.nanoTime();
                 content = content + ",cost " + (end - start) + " ms";
@@ -96,6 +98,7 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter {
                 sendResponse(responseOk, keepAlive, ctx);
             } else if ("void".equals(method)) {
                 String content = "void hello world";
+                final long start = System.nanoTime();
                 echoService.voidEcho(content, sleep, verbose);
                 long end = System.nanoTime();
                 if (verbose) {
