@@ -111,6 +111,11 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter {
                 String content = "none hello world";
                 FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
                 sendResponse(responseOk, keepAlive, ctx);
+            }else if("bench".equals(method)) {
+                ProviderTest.test(echoService);
+                String content = "benchmark completely";
+                FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
+                sendResponse(responseOk, keepAlive, ctx);
             }
         }
 
