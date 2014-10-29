@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 public class NettyHttpProxy implements HttpProxy {
 
     private static final Logger logger = LoggerFactory.getLogger(NettyHttpProxy.class);
-    private static final String CONFIG = "proxy.properties";
+    private static final String CONFIG = "proxy.conf";
     private NettyProxyConfig config = NettyProxyConfig.load(CONFIG);
 
 

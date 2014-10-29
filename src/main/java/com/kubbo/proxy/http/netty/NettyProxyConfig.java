@@ -20,7 +20,7 @@ public class NettyProxyConfig {
 
     public static NettyProxyConfig load(String resourceName) {
 
-        Config innnerConfig = ConfigFactory.parseResources("proxy.properties");
+        Config innnerConfig = ConfigFactory.parseResources("proxy.conf");
         logger.info("load config {}", innnerConfig.toString());
         NettyProxyConfig nettyConfig = new NettyProxyConfig();
         nettyConfig.setWorkerCount(innnerConfig.getInt("proxy.worker.count"));

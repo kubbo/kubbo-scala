@@ -3,7 +3,9 @@ package com.kubbo.proxy.http.netty;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 
 /**
@@ -19,8 +21,10 @@ public class NettyHttpProxyHandlerInitializer extends ChannelInitializer<SocketC
     public void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline p = ch.pipeline();
         p.addLast("codec", new HttpServerCodec());
+        p.addLast("aggregator", new HttpObjectAggregator(Integer.MAX_VALUE));
         p.addLast("handler", new NettyHttpProxyHandler());
-        p.addLast("timeout", new WriteTimeoutHandler(2));
+        p.addLast("read-timeout", new ReadTimeoutHandler(10));
+        p.addLast("wrtie-timeout", new WriteTimeoutHandler(10));
 
     }
 }
