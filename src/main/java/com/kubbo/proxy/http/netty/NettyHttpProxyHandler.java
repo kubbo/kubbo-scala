@@ -1,7 +1,9 @@
 package com.kubbo.proxy.http.netty;
 
+import akka.dispatch.OnComplete;
 import com.kubbo.demo.EchoService;
 import com.kubbo.rpc.Ref;
+import com.kubbo.rpc.akka.Context;
 import com.kubbo.rpc.akka.Reference;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -58,37 +60,30 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter {
             QueryStringDecoder decoder = new QueryStringDecoder(req.getUri(), Charset.forName("UTF-8"));
             Map<String, List<String>> params = decoder.parameters();
             String method = params.containsKey("method") ? params.get("method").get(0) : "sync";
+            String param = params.containsKey("param") ? params.get("param").get(0) : "hello world";
             final boolean verbose = params.containsKey("verbose") ? Boolean.parseBoolean(params.get("verbose").get(0)) : Boolean.FALSE;
             final long sleep = params.containsKey("sleep") ? Long.parseLong(params.get("sleep").get(0)) : 0;
             final boolean keepAlive = isKeepAlive(req);
 
-
             if ("async".equals(method)) {
                 final long start = System.nanoTime();
-                Future<String> echoFuture = echoService.asyncEcho("async hello world",sleep,verbose);
+                Future<String> echoFuture = echoService.asyncEcho(param,sleep,verbose);
                 long end = System.nanoTime();
-                String content = "hello" + ",cost:" + (end - start) + " ms";
-
-                if (verbose) {
-                    logger.info(content);
-                }
-                FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
-                sendResponse(responseOk, keepAlive, ctx);
-//                echoFuture.onComplete(new OnComplete<String>() {
-//                    @Override
-//                    public void onComplete(Throwable failure, String success) throws Throwable {
-//                        long end = System.currentTimeMillis();
-//                        String content = success + ",cost:" + (end - start) + " ms";
-//                        if (verbose) {
-//                            logger.info(content);
-//                        }
-//                        FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
-//                        sendResponse(responseOk, keepAlive, ctx);
-//                    }
-//                }, Context.context());
+                echoFuture.onComplete(new OnComplete<String>() {
+                    @Override
+                    public void onComplete(Throwable failure, String success) throws Throwable {
+                        long end = System.nanoTime();
+                        String content = success + ",cost:" + (end - start) + " ms";
+                        if (verbose) {
+                            logger.info(content);
+                        }
+                        FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
+                        sendResponse(responseOk, keepAlive, ctx);
+                    }
+                }, Context.context());
             } else if ("sync".equals(method)) {
                 final long start = System.nanoTime();
-                String content = echoService.syncEcho("sync hello world",sleep,verbose);
+                String content = echoService.syncEcho(param,sleep,verbose);
                 long end = System.nanoTime();
                 content = content + ",cost " + (end - start) + " ms";
                 if (verbose) {
@@ -97,18 +92,17 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter {
                 FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
                 sendResponse(responseOk, keepAlive, ctx);
             } else if ("void".equals(method)) {
-                String content = "void hello world";
                 final long start = System.nanoTime();
-                echoService.voidEcho(content, sleep, verbose);
+                echoService.voidEcho(param, sleep, verbose);
                 long end = System.nanoTime();
                 if (verbose) {
-                    logger.info(content + ",cost:" + (end - start));
+                    logger.info(param + ",cost:" + (end - start));
                 }
 
-                FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
+                FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer("void".getBytes()));
                 sendResponse(responseOk, keepAlive, ctx);
             } else if ("none".equals(method)) {
-                String content = "none hello world";
+                String content = "none";
                 FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
                 sendResponse(responseOk, keepAlive, ctx);
             }else if("bench".equals(method)) {
