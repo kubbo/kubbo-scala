@@ -48,7 +48,7 @@ class ProviderContainer(val typedActorNum: Int = Constants.TYPED_ACTOR_NUM) exte
       var actorRefList: List[ActorRef] = List()
       var routeePaths: List[String] = List()
 
-      for (i <- 0 to typedActorNum) {
+      for (i <- 1 to typedActorNum) {
         val proxy: T = typed.typedActorOf(TypedProps[T](clazz, implements))
 
         val actorRef: ActorRef = typed.getActorRefFor(proxy)
