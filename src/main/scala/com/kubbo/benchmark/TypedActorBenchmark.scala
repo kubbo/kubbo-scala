@@ -18,11 +18,13 @@ object TypedActorBenchmark extends App{
     impl
   }))
 
-  val size = 100000
+  val size = 100
   val start = System.currentTimeMillis()
   for(i <- 0 until size){
-    echoService.syncEcho("hello world")
+    echoService.asyncEcho("hello world",1000,true)
   }
+  println("xxxx")
+  Thread.sleep(Integer.MAX_VALUE)
   val mid = System.currentTimeMillis()
 
   println("cost:" + (mid - start)+",opt="+(size*1000/(mid-start))+"/s")
