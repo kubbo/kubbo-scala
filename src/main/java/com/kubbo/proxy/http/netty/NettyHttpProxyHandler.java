@@ -83,12 +83,17 @@ public class NettyHttpProxyHandler extends ChannelHandlerAdapter {
                 }, Context.context());
             } else if ("sync".equals(method)) {
                 final long start = System.nanoTime();
-                String content = echoService.syncEcho(param,sleep,verbose);
-                long end = System.nanoTime();
-                content = content + ",cost " + (end - start) + " ms";
-                if (verbose) {
-                    logger.info(content);
+                String content = "";
+                try {
+                     echoService.syncEcho(param, sleep, verbose);
+                    long end = System.nanoTime();
+                    content = content + ",cost " + (end - start) + " ms";
+                    if (verbose) {
+                        logger.info(content);
+                    }
+                } catch (Exception e) {
                 }
+
                 FullHttpResponse responseOk = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
                 sendResponse(responseOk, keepAlive, ctx);
             } else if ("void".equals(method)) {
